@@ -3,8 +3,8 @@ let ctx = canvas.getContext('2d');
 canvas.width = 600;
 canvas.height = 600;
 
-let player = true;
-let 
+var player = true;
+var gameGrid = []
 
 /**
  * It draws a grid on the canvas
@@ -24,18 +24,39 @@ const drawGrid = (ctx) => {
   ctx.stroke();
 }
 
-
 canvas.addEventListener('click', function(e) {
   let posX = getNewPosition(e.offsetX, player)
   let posY = getNewPosition(e.offsetY, player)
   
-  saveMove(posX, posY)
-  drawXorO(posX, posY, player)
-  player = !player;
+  player = saveMove(posX, posY, player)
+  console.log({gameGrid});
+  console.log({player});
 }, false);
 
-const saveMove = () => {
-  return false
+/**
+ * If the gameGrid object has a key that matches the position of the click, then
+ * display a message to the user. Otherwise, add the position to the gameGrid
+ * object and draw the X or O
+ * @param posX - the x position of the mouse click
+ * @param posY - The Y position of the mouse click
+ * @param player - the player who's turn it is
+ * @returns the drawXorO function.
+ */
+const saveMove = (posX, posY, player) => {
+  let key = `${posX}${posY}`
+  let key02 = `${posX + 50}${posY + 50}`
+  let key03 = `${posX - 50}${posY - 50}`
+
+  if (gameGrid[key] !== undefined || gameGrid[key02] !== undefined || gameGrid[key03] !== undefined) {
+    let message = document.getElementById("message");
+    message.classList.remove('hidden');
+    setTimeout(() => { message.classList.add('hidden'); }, 3000);
+  } else {
+    gameGrid[key] = {
+      value: player ? 1 : 0
+    }
+    return drawXorO(posX, posY, player);
+  }
 }
 
 /**
@@ -61,6 +82,7 @@ const drawXorO = (posX, posY, player) => {
 
   ctx.lineWidth = 15;
   ctx.stroke();
+  return !player
 }
 
 /**
