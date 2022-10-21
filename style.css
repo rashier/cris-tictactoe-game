@@ -15,7 +15,7 @@ canvas {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  border: 0.5rem solid grey;
-  border-radius: 2rem;
+  /* border: 0.5rem solid grey;
+  border-radius: 2rem; */
   background-color: rgb(246, 246, 240);
 }
