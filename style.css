@@ -6,16 +6,40 @@
 
 body {
   background-color: lightgrey;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+main {
+  padding-top: 5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 canvas {
-  width: 600px;
-  height: 600px;
-  position: absolute;
+  width: 37.5rem;
+  height: 37.5rem;
+  /* position: absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%); */
   /* border: 0.5rem solid grey;
   border-radius: 2rem; */
   background-color: rgb(246, 246, 240);
+}
+
+.message {
+  margin-top: 1rem;
+  border: 1px solid brown;
+  border-radius: 3rem;
+  background-color: brown;
+  color: white;
+  padding: 1rem 5rem;
+}
+
+.hidden {
+  display: none;
 }
