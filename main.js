@@ -1,3 +1,7 @@
+// import positions from './seed.json' assert { type: "json" };
+import positions from './positions.js';
+
+
 let canvas = document.getElementById('canvas03');
 let ctx = canvas.getContext('2d');
 canvas.width = 600;
@@ -5,6 +9,8 @@ canvas.height = 600;
 
 var player = true;
 var gameGrid = []
+var gridForCheck = []
+let moves = 0
 
 /**
  * It draws a grid on the canvas
@@ -29,8 +35,6 @@ canvas.addEventListener('click', function(e) {
   let posY = getNewPosition(e.offsetY, player)
   
   player = saveMove(posX, posY, player)
-  console.log({gameGrid});
-  console.log({player});
 }, false);
 
 /**
@@ -50,11 +54,16 @@ const saveMove = (posX, posY, player) => {
   if (gameGrid[key] !== undefined || gameGrid[key02] !== undefined || gameGrid[key03] !== undefined) {
     let message = document.getElementById("message");
     message.classList.remove('hidden');
-    setTimeout(() => { message.classList.add('hidden'); }, 3000);
+    setTimeout(() => { message.classList.add('hidden'); }, 500);
+    return player
   } else {
-    gameGrid[key] = {
-      value: player ? 1 : 0
+    moves++
+    gameGrid[key] = {move: moves}
+    gridForCheck[positions[key].position] = {
+      player: player ? 'one' : 'two',
+      value: player ? 'X' : 'O',
     }
+    console.log(gridForCheck);
     return drawXorO(posX, posY, player);
   }
 }
@@ -74,10 +83,10 @@ const drawXorO = (posX, posY, player) => {
     ctx.lineTo(posX + 100, posY + 100);
     ctx.moveTo(posX, posY + 100);
     ctx.lineTo(posX + 100, posY);
-    ctx.strokeStyle = "blue";
+    ctx.strokeStyle = "darkblue";
   } else {
     ctx.arc(posX, posY, 50, 0, 2 * Math.PI);
-    ctx.strokeStyle = "red";
+    ctx.strokeStyle = "brown";
   }
 
   ctx.lineWidth = 15;
@@ -113,3 +122,17 @@ const draw = () => {
 
 draw();
 
+const checkGame = () => {
+
+}
+
+// 123 +1
+// 456
+// 789
+
+// 147 +3
+// 258
+// 369
+
+// 159 +4 
+// 357 +2
