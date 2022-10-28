@@ -9,8 +9,9 @@ canvas.height = 600;
 
 var player = true;
 var gameGrid = []
-var gridForCheck = []
+var gridForCheck = Array(9).fill({player: '', value:''})
 let moves = 0
+let currentPlayer = ''
 
 /**
  * It draws a grid on the canvas
@@ -35,14 +36,17 @@ canvas.addEventListener('click', function(e) {
   let posY = getNewPosition(e.offsetY, player)
   
   player = saveMove(posX, posY, player)
+  checkGame()
+
 }, false);
 
+
 /**
- * If the gameGrid object has a key that matches the position of the click, then
- * display a message to the user. Otherwise, add the position to the gameGrid
- * object and draw the X or O
+ * It takes in the x and y coordinates of the click, and the player, and then
+ * checks if the position is already taken. If it is, it returns the player, and if
+ * it isn't, it draws the X or O, and returns the player
  * @param posX - the x position of the mouse click
- * @param posY - The Y position of the mouse click
+ * @param posY - the y position of the mouse click
  * @param player - the player who's turn it is
  * @returns the drawXorO function.
  */
@@ -57,11 +61,13 @@ const saveMove = (posX, posY, player) => {
     setTimeout(() => { message.classList.add('hidden'); }, 500);
     return player
   } else {
+    currentPlayer = player ? 'X' : 'O'
     moves++
     gameGrid[key] = {move: moves}
     gridForCheck[positions[key].position] = {
       player: player ? 'one' : 'two',
       value: player ? 'X' : 'O',
+      position: [posX, posY]
     }
     console.log(gridForCheck);
     return drawXorO(posX, posY, player);
@@ -119,20 +125,35 @@ const getNewPosition = (pos, player) => {
 const draw = () => {
   drawGrid(ctx);
 }
-
 draw();
 
-const checkGame = () => {
+let posWins = []
 
+const checkGame = () => {
+  if (  checkString(0,1) || checkString(3,1) || checkString(6,1) ||
+        checkString(0,3) || checkString(1,3) || checkString(2,3) ||
+        checkString(0,4) || checkString(2,2)
+  ) {
+    console.log('win', currentPlayer)
+    ctx.beginPath();
+    ctx.moveTo(200, 0);
+    ctx.lineTo(200, 600);
+    ctx.lineWidth = 5;
+    ctx.stroke();
+  } else if (moves === 9){
+    console.log('draw')
+  }
 }
 
-// 123 +1
-// 456
-// 789
-
-// 147 +3
-// 258
-// 369
-
-// 159 +4 
-// 357 +2
+const checkString = (num1, inc) => {
+  // console.log(`${gridForCheck[num1].value}${gridForCheck[num1 + inc].value}${gridForCheck[num1+inc+inc].value}`)
+  if (['XXX', 'OOO'].includes(`${gridForCheck[num1].value}${gridForCheck[num1 + inc].value}${gridForCheck[num1+inc+inc].value}`) &&
+      ![gridForCheck[num1].value, gridForCheck[num1 + inc].value, gridForCheck[num1 + inc+inc].value].includes('')
+  ) {
+    posWins = [gridForCheck[num1].position, gridForCheck[num1+inc+inc].position]
+    console.log("🚀 ~ file: main.js ~ line 158 ~ checkString ~ posWins", posWins)
+    return true
+  } else {
+    return false
+  }
+}
