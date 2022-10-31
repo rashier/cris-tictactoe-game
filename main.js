@@ -35,6 +35,8 @@ canvas.addEventListener('click', function(e) {
   let posX = getNewPosition(e.offsetX, player)
   let posY = getNewPosition(e.offsetY, player)
   
+  console.log(typeof posY)
+
   player = saveMove(posX, posY, player)
   checkGame()
 
@@ -67,7 +69,7 @@ const saveMove = (posX, posY, player) => {
     gridForCheck[positions[key].position] = {
       player: player ? 'one' : 'two',
       value: player ? 'X' : 'O',
-      position: [posX, posY]
+      position: [`${posX}`.match(/[0-9](50)|50$/) ? posX + 50 : posX , `${posY}`.match(/[0-9](50)|50$/) ? posY + 50 : posY]
     }
     console.log(gridForCheck);
     return drawXorO(posX, posY, player);
@@ -136,9 +138,10 @@ const checkGame = () => {
   ) {
     console.log('win', currentPlayer)
     ctx.beginPath();
-    ctx.moveTo(200, 0);
-    ctx.lineTo(200, 600);
+    ctx.moveTo(posWins[0][0],posWins[0][1]);
+    ctx.lineTo(posWins[1][0], posWins[1][1]);
     ctx.lineWidth = 5;
+    ctx.strokeStyle = "yellow";
     ctx.stroke();
   } else if (moves === 9){
     console.log('draw')
