@@ -1,5 +1,6 @@
 // import positions from './seed.json' assert { type: "json" };
 import positions from './positions.js';
+import {posWins} from './positions.js';
 
 
 let canvas = document.getElementById('canvas03');
@@ -69,7 +70,7 @@ const saveMove = (posX, posY, player) => {
     gridForCheck[positions[key].position] = {
       player: player ? 'one' : 'two',
       value: player ? 'X' : 'O',
-      position: [`${posX}`.match(/[0-9](50)|50$/) ? posX + 50 : posX , `${posY}`.match(/[0-9](50)|50$/) ? posY + 50 : posY]
+      position: [positions[key].posWinX , positions[key].posWinY]
     }
     console.log(gridForCheck);
     return drawXorO(posX, posY, player);
@@ -129,32 +130,31 @@ const draw = () => {
 }
 draw();
 
-let posWins = []
+let posWin = []
 
 const checkGame = () => {
   if (  checkString(0,1) || checkString(3,1) || checkString(6,1) ||
         checkString(0,3) || checkString(1,3) || checkString(2,3) ||
         checkString(0,4) || checkString(2,2)
   ) {
-    console.log('win', currentPlayer)
     ctx.beginPath();
-    ctx.moveTo(posWins[0][0],posWins[0][1]);
-    ctx.lineTo(posWins[1][0], posWins[1][1]);
+    ctx.moveTo(posWin[0][0],posWin[0][1]);
+    ctx.lineTo(posWin[1][0], posWin[1][1]);
     ctx.lineWidth = 5;
     ctx.strokeStyle = "yellow";
     ctx.stroke();
   } else if (moves === 9){
-    console.log('draw')
   }
 }
 
 const checkString = (num1, inc) => {
   // console.log(`${gridForCheck[num1].value}${gridForCheck[num1 + inc].value}${gridForCheck[num1+inc+inc].value}`)
-  if (['XXX', 'OOO'].includes(`${gridForCheck[num1].value}${gridForCheck[num1 + inc].value}${gridForCheck[num1+inc+inc].value}`) &&
+  if (['XXX', 'OOO'].includes(
+    `${gridForCheck[num1].value}${gridForCheck[num1 + inc].value}${gridForCheck[num1+inc+inc].value}`) 
+    &&
       ![gridForCheck[num1].value, gridForCheck[num1 + inc].value, gridForCheck[num1 + inc+inc].value].includes('')
   ) {
-    posWins = [gridForCheck[num1].position, gridForCheck[num1+inc+inc].position]
-    console.log("🚀 ~ file: main.js ~ line 158 ~ checkString ~ posWins", posWins)
+    posWin = posWins[`${num1}${num1+inc+inc}`]
     return true
   } else {
     return false
