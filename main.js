@@ -17,11 +17,21 @@ let gameFinish = false
 //TODO Verificar si la voy a usar la variable o no
 let currentPlayer = ''
 
+const resetVariables = () => {
+  player = true;
+  gameGrid = []
+  gridForCheck = Array(9).fill({player: '', value:''})
+  moves = 0
+  posWin = []
+  gameFinish = false
+}
+
 /**
  * It draws a grid on the canvas
  * @param ctx - The context of the canvas.
  */
 const drawGrid = (ctx) => {
+  resetVariables();
   ctx.beginPath();
   ctx.moveTo(200, 0);
   ctx.lineTo(200, 600);
@@ -31,6 +41,7 @@ const drawGrid = (ctx) => {
   ctx.lineTo(600, 200);
   ctx.moveTo(0, 400);
   ctx.lineTo(600, 400);
+  ctx.strokeStyle = "black";
   ctx.lineWidth = 5;
   ctx.stroke();
 }
@@ -179,8 +190,20 @@ const checkString = (num1, inc) => {
 
 let startButton = document.getElementById('btn-start')
 
-/* Adding an event listener to the start button, so that when the button is
-clicked, the canvas is displayed. */
+/* Adding an event listener to the start button. When the button is clicked, it
+checks if the button says 'Start'. If it does, it removes the hidden class from
+the canvas, and changes the text of the button to 'Reload'. If the button says
+'Reload', it clears the canvas, changes the text of the button to 'Start', adds
+the hidden class to the canvas, and calls the draw function. */
 startButton.addEventListener('click', () => {
-  canvas.classList.remove('hidden')
+  if (startButton.innerText == 'Start') {
+    canvas.classList.remove('hidden')
+    startButton.innerText = 'Reload'
+  } else if (startButton.innerText == 'Reload') {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    startButton.innerText = 'Start'
+    canvas.classList.add('hidden')
+    
+    draw()
+  }
 })
