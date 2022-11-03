@@ -12,6 +12,9 @@ var player = true;
 var gameGrid = []
 var gridForCheck = Array(9).fill({player: '', value:''})
 let moves = 0
+let posWin = []
+let gameFinish = false
+//TODO Verificar si la voy a usar la variable o no
 let currentPlayer = ''
 
 /**
@@ -33,16 +36,14 @@ const drawGrid = (ctx) => {
 }
 
 canvas.addEventListener('click', function(e) {
-  let posX = getNewPosition(e.offsetX, player)
-  let posY = getNewPosition(e.offsetY, player)
-  
-  console.log(typeof posY)
-
-  player = saveMove(posX, posY, player)
-  checkGame()
-
+  if (!gameFinish) {
+    let posX = getNewPosition(e.offsetX, player)
+    let posY = getNewPosition(e.offsetY, player)
+    
+    player = saveMove(posX, posY, player)
+    checkGame()
+  }
 }, false);
-
 
 /**
  * It takes in the x and y coordinates of the click, and the player, and then
@@ -70,9 +71,7 @@ const saveMove = (posX, posY, player) => {
     gridForCheck[positions[key].position] = {
       player: player ? 'one' : 'two',
       value: player ? 'X' : 'O',
-      position: [positions[key].posWinX , positions[key].posWinY]
     }
-    console.log(gridForCheck);
     return drawXorO(posX, posY, player);
   }
 }
@@ -130,13 +129,16 @@ const draw = () => {
 }
 draw();
 
-let posWin = []
-
+/**
+ * If the player has won, draw a line between the winning positions. If the game is
+ * a draw, display a message
+ */
 const checkGame = () => {
   if (  checkString(0,1) || checkString(3,1) || checkString(6,1) ||
         checkString(0,3) || checkString(1,3) || checkString(2,3) ||
         checkString(0,4) || checkString(2,2)
   ) {
+    gameFinish = true
     ctx.beginPath();
     ctx.moveTo(posWin[0][0],posWin[0][1]);
     ctx.lineTo(posWin[1][0], posWin[1][1]);
@@ -144,11 +146,22 @@ const checkGame = () => {
     ctx.strokeStyle = "yellow";
     ctx.stroke();
   } else if (moves === 9){
+    gameFinish = true
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.font = "100px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText("DRAW", canvas.width/2, canvas.height/2);
   }
 }
 
+/**
+ * It checks if the values of the three grid elements in the gridForCheck array are
+ * the same and not empty
+ * @param num1 - the first number in the gridForCheck array
+ * @param inc - the increment to the next number in the gridForCheck array
+ * @returns A boolean value
+ */
 const checkString = (num1, inc) => {
-  // console.log(`${gridForCheck[num1].value}${gridForCheck[num1 + inc].value}${gridForCheck[num1+inc+inc].value}`)
   if (['XXX', 'OOO'].includes(
     `${gridForCheck[num1].value}${gridForCheck[num1 + inc].value}${gridForCheck[num1+inc+inc].value}`) 
     &&
@@ -160,3 +173,14 @@ const checkString = (num1, inc) => {
     return false
   }
 }
+
+
+
+
+let startButton = document.getElementById('btn-start')
+
+/* Adding an event listener to the start button, so that when the button is
+clicked, the canvas is displayed. */
+startButton.addEventListener('click', () => {
+  canvas.classList.remove('hidden')
+})
