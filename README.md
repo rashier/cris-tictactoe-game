@@ -42,7 +42,7 @@ Tic-tac-toe (American English), noughts and crosses (Commonwealth English), or X
 - [x] Painted of the X and the O.
 - [x] Logic to put the play in place.
 - [x] Logic to verify who wins.
-- [ ] Starting screen.
+- [x] Starting screen.
 - [ ] Message of who won and how many plays.
 - [ ] Logic to play again.
 - [x] Translate readme.MD
